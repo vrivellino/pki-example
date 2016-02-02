@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 
 cd "$(dirname "$0")/.."
 
@@ -37,6 +37,39 @@ init_ca() {
         -out data/ca/$ca_name-ca.csr \
         -keyout data/ca/$ca_name-ca/private/$ca_name-ca.key
 }
+
+if [ -f data/ca-env.sh ]; then
+    echo 'Fatal: data/ca-env.sh exists ... aborting' >&2
+    exit 1
+fi
+
+read -p 'Domain Name (ex: domain.tld): ' ca_domain
+read -p 'Organization (ex: Company Name): ' org_name
+
+domain_component_0=$(echo $ca_domain | cut -f 1 -d .)
+domain_component_1=$(echo $ca_domain | cut -f 2 -d .)
+
+set -x
+
+test -n "$domain_component_0"
+test -n "$domain_component_1"
+test -n "$org_name"
+
+cat > data/ca-env.sh << _END_
+export ROOT_CA_DC_0='$domain_component_0'
+export ROOT_CA_DC_1='$domain_component_1'
+export ROOT_CA_ORG='$org_name'
+export ROOT_CA_OU='$org_name Root CA'
+export ROOT_CA_CN='$org_name Root CA'
+
+export SIGNING_CA_DC_0='$domain_component_0'
+export SIGNING_CA_DC_1='$domain_component_1'
+export SIGNING_CA_ORG='$org_name'
+export SIGNING_CA_OU='$org_name Signing CA'
+export SIGNING_CA_CN='$org_name Signing CA'
+_END_
+
+. data/ca-env.sh
 
 init_ca root
 openssl ca -selfsign \

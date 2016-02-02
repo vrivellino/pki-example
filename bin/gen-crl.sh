@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-
-set -ex
-
+set -e
 cd "$(dirname "$0")/.."
+. data/ca-env.sh
+
+set -x
 
 openssl ca -gencrl \
     -config etc/root-ca.conf \

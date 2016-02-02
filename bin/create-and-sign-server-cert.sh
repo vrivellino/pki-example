@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+set -e
+cd "$(dirname "$0")/.."
+. data/ca-env.sh
 
 split_common_name() {
     set +x
@@ -17,10 +20,6 @@ if [ -e "data/certs/$1.crt" ]; then
     exit 1
 fi
 
-set -ex
-
-cd "$(dirname "$0")/.."
-
 export CN="$1"
 export companyName="${SSL_COMPANY_NAME:-Simple Inc}"
 export ouName="${SSL_ORG_NAME:-Operations}"
@@ -31,6 +30,8 @@ while read line ; do
     SAN="$SAN, $line"
 done
 export SAN
+
+set -x
 
 test -n "$CN"
 test -n "$domainComponent0"

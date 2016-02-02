@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+set -e
+cd "$(dirname "$0")/.."
+. data/ca-env.sh
 
 export cert_file="$1"
 export crl_reason="$2"
@@ -11,9 +14,7 @@ if [ -z "$cert_file" -o -z "$crl_reason" ]; then
     exit 1
 fi
 
-set -ex
-
-cd "$(dirname "$0")/.."
+set -x
 
 mkdir -p data/certs/revoked
 
