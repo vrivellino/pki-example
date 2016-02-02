@@ -14,7 +14,7 @@ init_ca() {
     ca_name="$1"
     test -n "$ca_name"
 
-    mkdir -p data/ca/$ca_name-ca/private data/ca/$ca_name-ca/db data/crl data/certs
+    mkdir -p data/ca/$ca_name-ca/private data/ca/$ca_name-ca/db data/ca/$ca_name-ca/certs data/crl data/certs
     chmod 700 data/ca/$ca_name-ca/private
 
     if [ -e data/ca/$ca_name-ca/db/$ca_name-ca.db ]; then
