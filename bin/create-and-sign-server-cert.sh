@@ -52,7 +52,7 @@ openssl ca \
     -out data/certs/$CN.crt \
     -extensions server_ext
 
-serial="$(openssl x509 -in data/certs/$CN.crt | cut -f 2 -d =)"
+serial="$(openssl x509 -in data/certs/$CN.crt -noout -serial | cut -f 2 -d =)"
 
 cd data/ca/signing-ca/certs
 ln -snf $serial.pem $CN.pem
