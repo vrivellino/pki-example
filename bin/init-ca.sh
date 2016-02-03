@@ -45,28 +45,37 @@ fi
 
 read -p 'Domain Name (ex: domain.tld): ' ca_domain
 read -p 'Organization (ex: Company Name): ' org_name
+read -p 'Organization Unit (ex: Staging): ' org_unit
 
 domain_component_0=$(echo $ca_domain | cut -f 1 -d .)
 domain_component_1=$(echo $ca_domain | cut -f 2 -d .)
+domain_component_2=$(echo $ca_domain | cut -f 3 -d .)
 
 set -x
 
 test -n "$domain_component_0"
 test -n "$domain_component_1"
 test -n "$org_name"
+test -n "$org_unit"
 
+mkdir -p data
 cat > data/ca-env.sh << _END_
 export ROOT_CA_DC_0='$domain_component_0'
 export ROOT_CA_DC_1='$domain_component_1'
+export ROOT_CA_DC_2='$domain_component_2'
 export ROOT_CA_ORG='$org_name'
-export ROOT_CA_OU='$org_name Root CA'
-export ROOT_CA_CN='$org_name Root CA'
+export ROOT_CA_OU='$org_unit Root CA'
+export ROOT_CA_CN='$org_unit Root CA'
 
 export SIGNING_CA_DC_0='$domain_component_0'
 export SIGNING_CA_DC_1='$domain_component_1'
+export SIGNING_CA_DC_2='$domain_component_2'
 export SIGNING_CA_ORG='$org_name'
-export SIGNING_CA_OU='$org_name Signing CA'
-export SIGNING_CA_CN='$org_name Signing CA'
+export SIGNING_CA_OU='$org_unit Signing CA'
+export SIGNING_CA_CN='$org_unit Signing CA'
+
+export SSL_COMPANY_NAME='$org_name'
+export SSL_ORG_NAME='$org_unit'
 _END_
 
 . data/ca-env.sh
