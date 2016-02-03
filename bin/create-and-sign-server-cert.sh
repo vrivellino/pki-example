@@ -21,15 +21,16 @@ if [ -e "data/certs/$1.crt" ]; then
 fi
 
 export CN="$1"
+shift
+SAN="DNS:$CN"
+for san in "$@" ; do
+    SAN="$SAN, $san"
+done
+export SAN
+
 export companyName="${SSL_COMPANY_NAME:-Simple Inc}"
 export ouName="${SSL_ORG_NAME:-Operations}"
 eval "$(split_common_name $CN)"
-
-SAN="DNS:$CN"
-while read line ; do
-    SAN="$SAN, $line"
-done
-export SAN
 
 set -x
 
